@@ -1,0 +1,11 @@
+Model Information:
+* title:	Torhouse Stone Circle, Galloway, Scotland
+* source:	https://sketchfab.com/3d-models/torhouse-stone-circle-galloway-scotland-fbbb8f9b0cc74e7ba99f9819726156fb
+* author:	Global Digital Heritage (https://sketchfab.com/GlobalDigitalHeritage)
+
+Model License:
+* license type:	CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
+* requirements:	Author must be credited. No commercial use.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Torhouse Stone Circle, Galloway, Scotland" (https://sketchfab.com/3d-models/torhouse-stone-circle-galloway-scotland-fbbb8f9b0cc74e7ba99f9819726156fb) by Global Digital Heritage (https://sketchfab.com/GlobalDigitalHeritage) licensed under CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)
