@@ -1,0 +1,6 @@
+- Download Vulkan SDK ( https://www.lunarg.com/vulkan-sdk/ ) 
+- Make sure the entry VULKAN_SDK is specified within your environment variables
+- Restart your PC ( this is the easiest solution for our system to reinitialize with the new environment variable )
+- Within your repository folder run `cmake -Bbuild` ( this should generate a "build" folder with your solution in it )
+- Run your .sln file
+- Happy coding ;-)
