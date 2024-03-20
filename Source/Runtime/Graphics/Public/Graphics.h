@@ -30,7 +30,6 @@ private:
 	vk::DispatchLoaderDynamic dispatchLoaderD;
 	vk::SurfaceKHR surface;
 	void CreateInstance();
-	
 
 	// Device
 	vk::PhysicalDevice physicalDevice;
