@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.28)
 
 project(VulkanBoids)
 
+# Add a macro for debugging
+# All current compile options: Debug, Release, RelWithDebInfo, and MinSizeRel
+if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+    add_compile_definitions(ENABLE_VALIDATION_LAYER=1)
+elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+    add_compile_definitions(ENABLE_VALIDATION_LAYER=0)
+endif()
+
 # Use C++ 17 as a standard
 set(CMAKE_CXX_STANDARD 17)
 

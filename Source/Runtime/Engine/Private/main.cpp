@@ -1,5 +1,3 @@
-#define ENABLE_VALIDATION_LAYER 1
-
 #include "Engine.h"
 #include <iostream>
 
@@ -10,6 +8,7 @@ int main()
 
     Engine* vroem = new Engine();
 
+    system("pause");
     delete vroem;
 
     return 0;

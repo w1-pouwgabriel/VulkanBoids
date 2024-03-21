@@ -2,12 +2,13 @@
 #include "Instance.h"
 #include "Logging.h"
 #include "Device.h"
+#include "Swapchain.h"
 
 Graphics::Graphics()
 {
-	if (debugMode) {
+	#if ENABLE_VALIDATION_LAYER
 		std::cout << "Making a graphics engine\n";
-	}
+	#endif
 
 	CreateGLFW();
 	CreateInstance();
@@ -27,46 +28,47 @@ void Graphics::CreateGLFW()
 
 	//GLFWwindow* glfwCreateWindow (int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
 	if (window = glfwCreateWindow(windowWidth, windowHeight, "WindowGLFW", nullptr, nullptr)) {
-		if (debugMode) {
+		#if ENABLE_VALIDATION_LAYER
 			std::cout << "Successfully made a glfw window, width: " << windowWidth << ", height: " << windowHeight << '\n';
-		}
+		#endif
 	}
 	else {
-		if (debugMode) {
+		#if ENABLE_VALIDATION_LAYER
 			std::cout << "GLFW window creation failed\n";
-		}
+		#endif
 	}
 }
 
 void Graphics::CreateInstance()
 {
-	instance = VkInit::MakeInstance(debugMode, "graphics");
+	instance = VkInit::MakeInstance("graphics");
 	dispatchLoaderD = vk::DispatchLoaderDynamic(instance, vkGetInstanceProcAddr);
 
-	if (debugMode) {
+	#if ENABLE_VALIDATION_LAYER
 		debugMessenger = VkInit::MakeDebugMessenger(instance, dispatchLoaderD);
-	}
+	#endif
 	
 	if (glfwCreateWindowSurface(instance, window, nullptr, (VkSurfaceKHR*)&surface) == VK_SUCCESS) {
-		if (debugMode) {
+		#if ENABLE_VALIDATION_LAYER
 			std::cout << "Succesfully created the gltf window \n";
-		}
+		#endif
 	}
 	else {
-		if (debugMode) {
+		#if ENABLE_VALIDATION_LAYER
 			std::cout << "Could not create a gltf window \n";
-		}
+		#endif
 	}
 }
 
 void Graphics::CreateDevice()
 {
-	physicalDevice = VkInit::MakePhysicalDevice(instance, debugMode);
-	logicalDevice = VkInit::MakeLogicalDevice(physicalDevice, surface, debugMode);
-	auto familyQueues = VkInit::GetQueues(physicalDevice, logicalDevice, surface, debugMode);
+	physicalDevice = VkInit::MakePhysicalDevice(instance);
+	logicalDevice = VkInit::MakeLogicalDevice(physicalDevice, surface);
+	auto familyQueues = VkInit::GetQueues(physicalDevice, logicalDevice, surface);
 	graphicsQueue = familyQueues[0];
 	presentQueue = familyQueues[1];
 
+	VkInit::QuerySwapChainSupport(physicalDevice, surface);
 
 }
 
@@ -77,9 +79,9 @@ Graphics::~Graphics()
 	instance.destroySurfaceKHR(surface);
 
 	//Unload
-	if (debugMode) {
+	#if ENABLE_VALIDATION_LAYER
 		instance.destroyDebugUtilsMessengerEXT(debugMessenger, nullptr, dispatchLoaderD);
-	}
+	#endif
 
 	instance.destroy();
 
