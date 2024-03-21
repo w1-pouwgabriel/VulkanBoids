@@ -1,3 +1,5 @@
+- Download the GNU Compiler Collection (https://gcc.gnu.org) 
+-    Otherwise the launch scripts wont work
 - Download Vulkan SDK ( https://www.lunarg.com/vulkan-sdk/ ) 
 - Make sure the entry VULKAN_SDK is specified within your environment variables
 - Restart your PC ( this is the easiest solution for our system to reinitialize with the new environment variable )
