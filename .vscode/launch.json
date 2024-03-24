@@ -8,7 +8,7 @@
             "name": "Launch",
             "type": "cppdbg",
             "request": "launch",
-            "preLaunchTask": "", // The name of the task that you want to execute before launch
+            "preLaunchTask": "Build", // The name of the task that you want to execute before launch
             "program": "${workspaceFolder}/build/Source/Runtime/Engine/VulkanBoids.exe",
             "args": [],
             "stopAtEntry": false,

@@ -6,10 +6,6 @@
 
 Graphics::Graphics()
 {
-	#if ENABLE_VALIDATION_LAYER
-		std::cout << "Making a graphics engine\n";
-	#endif
-
 	CreateGLFW();
 	CreateInstance();
 	CreateDevice();
@@ -68,12 +64,22 @@ void Graphics::CreateDevice()
 	graphicsQueue = familyQueues[0];
 	presentQueue = familyQueues[1];
 
-	VkInit::QuerySwapChainSupport(physicalDevice, surface);
-
+	VkInit::SwapChainBundle bundle = VkInit::MakeSwapchain(logicalDevice, physicalDevice, surface, windowWidth, windowHeight);
+	swapchain = bundle.swapchain;
+	swapchainFrames = bundle.frames;
+	swapchainFormat = bundle.format;
+	swapchainExtent = bundle.extent;
 }
 
 Graphics::~Graphics()
 {
+	for (size_t i = 0; i < swapchainFrames.size(); i++)
+	{
+		logicalDevice.destroyImageView(swapchainFrames[i].imageView);
+	}
+
+	logicalDevice.destroySwapchainKHR(swapchain);
+
 	logicalDevice.destroy();
 
 	instance.destroySurfaceKHR(surface);

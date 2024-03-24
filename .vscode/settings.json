@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "optional": "cpp"
+        "functional": "cpp",
+        "iostream": "cpp",
+        "optional": "cpp",
+        "string": "cpp",
+        "algorithm": "cpp",
+        "format": "cpp"
     }
 }

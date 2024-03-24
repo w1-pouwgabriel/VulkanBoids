@@ -1,5 +1,6 @@
 #pragma once
 #include "Utils.h"
+#include "Frame.h"
 
 class Graphics
 {
@@ -28,5 +29,9 @@ private:
 	vk::Device logicalDevice;
 	vk::Queue graphicsQueue;
 	vk::Queue presentQueue;
+	vk::SwapchainKHR swapchain{ nullptr };
+	std::vector<VkUtil::SwapChainFrame> swapchainFrames;
+	vk::Format swapchainFormat;
+	vk::Extent2D swapchainExtent;
 	void CreateDevice();
 };

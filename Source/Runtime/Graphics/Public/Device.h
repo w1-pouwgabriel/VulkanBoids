@@ -3,15 +3,6 @@
 
 namespace VkInit 
 {
-	struct QueueFamilyIndices {
-		std::optional<uint32_t> graphicsFamily;
-		std::optional<uint32_t> presentFamily;
-
-		bool isComplete() {
-			return graphicsFamily.has_value() && presentFamily.has_value();
-		}
-	};
-
 	/**
 		Print out the properties of the given physical device.
 
@@ -38,14 +29,6 @@ namespace VkInit
 		\returns whether the device is suitable.
 	*/
 	bool isSuitable(const vk::PhysicalDevice& device);
-
-	/**
-		Check whether the given physical device has de needed families
-
-		\param device the physical device to check.
-		\returns a struct of QueueFamilyIndices
-	*/
-	QueueFamilyIndices findQueueFamilies(const vk::PhysicalDevice& device, const vk::SurfaceKHR& surface);
 	
 	/**
 		Choose a physical device based on the best hardware

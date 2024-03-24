@@ -52,6 +52,11 @@ namespace VkInit
 	std::vector<std::string> LogImageUsageBits(vk::ImageUsageFlags bits);
 
 	/**
+		\returns a string description of the given present mode.
+	*/
+	std::string LogPresentMode(vk::PresentModeKHR presentMode);
+
+	/**
 		Print out the properties of the given physical device.
 
 		\param device the physical device to investigate

@@ -3,13 +3,9 @@
 
 int main()
 {
-    std::cout << "!!!START YOUR ENGINES!!!\n";
-    system("pause");
-
     Engine* vroem = new Engine();
-
-    system("pause");
     delete vroem;
 
+    system("pause");
     return 0;
 }
