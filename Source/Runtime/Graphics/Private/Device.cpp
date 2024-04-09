@@ -149,8 +149,6 @@ namespace VkInit
 		try {
 			vk::Device device = physicalDevice.createDevice(createInfo);
 
-			int test = 0;
-
 			#if ENABLE_VALIDATION_LAYER
 				std::cout << "Logical device has correctly been created\n";
 			#endif

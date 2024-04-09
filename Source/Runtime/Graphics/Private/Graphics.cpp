@@ -3,12 +3,14 @@
 #include "Logging.h"
 #include "Device.h"
 #include "Swapchain.h"
+#include "Pipeline.h"
 
 Graphics::Graphics()
 {
 	CreateGLFW();
 	CreateInstance();
 	CreateDevice();
+	CreatePipeline();
 }
 
 void Graphics::CreateGLFW()
@@ -69,6 +71,13 @@ void Graphics::CreateDevice()
 	swapchainFrames = bundle.frames;
 	swapchainFormat = bundle.format;
 	swapchainExtent = bundle.extent;
+}
+
+void Graphics::CreatePipeline()
+{
+	vkInit::GraphicsPipelineInBundle specs = {};
+
+	vkInit::GraphicsPipelineOutBundle output = vkInit::CreateGraphicsPipeline(specs);
 }
 
 Graphics::~Graphics()
