@@ -8,27 +8,26 @@
             "name": "Launch",
             "type": "cppdbg",
             "request": "launch",
-            "preLaunchTask": "Build", // The name of the task that you want to execute before launch
             "program": "${workspaceFolder}/build/Source/Runtime/Engine/VulkanBoids.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/build/Source/Runtime/Engine/",//"${workspaceRoot}",
+            "preLaunchTask": "CMake: build", // The name of the task that you want to execute before launch
             "environment": [],
-            "externalConsole": true,
+            "externalConsole": false,
+            "logging": {
+                "moduleLoad": false,
+                "trace": true
+            },
             "MIMode": "gdb",
-            "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+            "miDebuggerPath": "C:\\msys64\\mingw64\\bin\\gdb.exe",
             "setupCommands": [
                 {
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
-                },
-                {
-                    "description": "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
                 }
             ]
-        }
+        },
     ]
 }

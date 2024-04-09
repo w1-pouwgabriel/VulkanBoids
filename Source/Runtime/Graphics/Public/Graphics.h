@@ -34,4 +34,10 @@ private:
 	vk::Format swapchainFormat;
 	vk::Extent2D swapchainExtent;
 	void CreateDevice();
+
+	//Pipeline
+	vk::PipelineLayout layout;
+	vk::RenderPass renderpass;
+	vk::Pipeline pipeline;
+	void CreatePipeline();
 };

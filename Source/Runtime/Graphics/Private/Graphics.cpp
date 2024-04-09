@@ -76,12 +76,26 @@ void Graphics::CreateDevice()
 void Graphics::CreatePipeline()
 {
 	vkInit::GraphicsPipelineInBundle specs = {};
+	specs.device = logicalDevice;
+	specs.vertexFilepath = "Shaders/vertex.spv";
+	specs.fragmentFilepath = "Shaders/fragment.spv";
+	specs.swapchainExtent = swapchainExtent;
+	specs.swapchainImageFormat = swapchainFormat;
 
 	vkInit::GraphicsPipelineOutBundle output = vkInit::CreateGraphicsPipeline(specs);
+	layout = output.layout;
+	renderpass = output.renderpass;
+	pipeline = output.pipeline;
 }
 
 Graphics::~Graphics()
 {
+	logicalDevice.destroyRenderPass(renderpass);
+
+	logicalDevice.destroyPipelineLayout(layout);
+
+	logicalDevice.destroyPipeline(pipeline);
+
 	for (size_t i = 0; i < swapchainFrames.size(); i++)
 	{
 		logicalDevice.destroyImageView(swapchainFrames[i].imageView);

@@ -33,3 +33,20 @@ endif()
 # Target properties
 set_target_properties(VulkanBoids PROPERTIES
                       FOLDER "Engine")
+
+# Get the list of .spv files
+file(GLOB SPV_FILES ${CMAKE_SOURCE_DIR}/Source/Runtime/Graphics/Shaders/*.spv)
+
+# Copy each .spv file individually
+foreach(SPV_FILE ${SPV_FILES})
+    # Get the file name without the path
+    get_filename_component(FILE_NAME ${SPV_FILE} NAME)
+
+    # Copy the file to the build directory
+    add_custom_command(
+        TARGET VulkanBoids PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+                ${SPV_FILE}
+                ${CMAKE_CURRENT_BINARY_DIR}/Shaders/${FILE_NAME}
+    )
+endforeach()

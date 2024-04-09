@@ -2,15 +2,17 @@
 
 namespace vkUtil {
 
-    std::vector<char> readFile(std::string filename, bool debug) 
+    std::vector<char> readFile(std::string filename) 
 	{
 		std::ifstream file(filename, std::ios::ate | std::ios::binary);
+		size_t filesize{ 0 };
 
-		if (debug && !file.is_open()) {
+		//If file does not exist it automatitcly closes the app
+		if (ENABLE_VALIDATION_LAYER && !file.is_open()) {
 			std::cout << "Failed to load \"" << filename << "\"" << std::endl;
+		}else{
+			filesize = static_cast<size_t>(file.tellg());
 		}
-
-		size_t filesize{ static_cast<size_t>(file.tellg()) };
 
 		std::vector<char> buffer(filesize);
 		file.seekg(0);
@@ -18,6 +20,7 @@ namespace vkUtil {
 
 		file.close();
 		return buffer;
+		
 	}
     
 	vk::ShaderModule CreateModule(std::string filename, vk::Device device) 
