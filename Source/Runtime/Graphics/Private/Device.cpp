@@ -1,6 +1,7 @@
 #include "Device.h"
 #include "Logging.h"
 #include "QueueFamilies.h"
+
 #include <set>
 
 namespace VkInit
