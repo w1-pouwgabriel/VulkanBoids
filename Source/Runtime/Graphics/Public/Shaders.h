@@ -2,7 +2,7 @@
 
 #include "Utils.h"
 
-namespace vkUtil {
+namespace VkUtil {
 
 	/**
 		Read a file.

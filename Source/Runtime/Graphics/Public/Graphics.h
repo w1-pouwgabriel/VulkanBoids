@@ -5,15 +5,14 @@
 class Graphics
 {
 public:
-	Graphics();
+	Graphics(int width, int height, GLFWwindow* window);
 	~Graphics();
 
 private:
 	//GLFW
-	int windowWidth{ 640 };
-	int windowHeight{ 480 };
-	GLFWwindow* window{ nullptr };
-	void CreateGLFW();
+	int windowWidth;
+	int windowHeight;
+	GLFWwindow* window;
 
 	//Vulkan
 	//	Instance
@@ -40,4 +39,13 @@ private:
 	vk::RenderPass renderpass;
 	vk::Pipeline pipeline;
 	void CreatePipeline();
+
+	//Command-related variables
+	vk::CommandPool commandPool;
+	vk::CommandBuffer mainCommandBuffer;
+
+	//Synchronization objects
+	vk::Fence inFlightFence;
+	vk::Semaphore imageAvailable, renderFinished;
+	void FinalizeSetup();
 };

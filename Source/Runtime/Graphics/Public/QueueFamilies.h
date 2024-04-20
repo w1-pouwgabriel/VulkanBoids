@@ -3,6 +3,7 @@
 #include "Utils.h"
 
 namespace VkUtil{
+
 	struct QueueFamilyIndices {
 		std::optional<uint32_t> graphicsFamily;
 		std::optional<uint32_t> presentFamily;

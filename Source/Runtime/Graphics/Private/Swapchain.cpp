@@ -123,7 +123,7 @@ namespace VkInit
 		}
 	}
 
-    SwapChainBundle MakeSwapchain(vk::Device logicalDevice, vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, int width, int height)
+    SwapChainBundle CreateSwapchain(vk::Device logicalDevice, vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, int width, int height)
     {
         auto support = QuerySwapChainSupport(physicalDevice, surface);
         vk::SurfaceFormatKHR format = ChooseSwapchainSurfaceFormat(support.formats);

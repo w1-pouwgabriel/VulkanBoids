@@ -1,6 +1,6 @@
 #include "Shaders.h"
 
-namespace vkUtil {
+namespace VkUtil {
 
     std::vector<char> readFile(std::string filename) 
 	{

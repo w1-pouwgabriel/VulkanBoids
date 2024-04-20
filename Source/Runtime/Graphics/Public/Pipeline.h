@@ -3,7 +3,7 @@
 #include "Utils.h"
 #include "Shaders.h"
 
-namespace vkInit {
+namespace VkInit {
     /**
 		holds the data structures used to create a pipeline
 	*/

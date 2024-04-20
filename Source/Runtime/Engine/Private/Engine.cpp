@@ -1,12 +1,11 @@
 #include "Engine.h"
-#include "Graphics.h"
 
 Engine::Engine()
 {
-	theGraphics = new Graphics();
+	graphics = new GraphicsApp(640, 480);
 }
 
 Engine::~Engine()
 {
-	delete theGraphics;
+	delete graphics;
 }

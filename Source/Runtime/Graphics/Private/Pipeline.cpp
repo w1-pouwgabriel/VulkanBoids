@@ -1,6 +1,6 @@
 #include "Pipeline.h"
 
-namespace vkInit {
+namespace VkInit {
 
     vk::PipelineLayout MakePipelineLayout(vk::Device device) 
     {
@@ -87,7 +87,7 @@ namespace vkInit {
 		#ifdef ENABLE_VALIDATION_LAYER
 			std::cout << "Create vertex shader module" << std::endl;
 		#endif
-		vk::ShaderModule vertexShader = vkUtil::CreateModule(
+		vk::ShaderModule vertexShader = VkUtil::CreateModule(
 			specification.vertexFilepath, specification.device
 		);
 		vk::PipelineShaderStageCreateInfo vertexShaderInfo = {};
@@ -133,7 +133,7 @@ namespace vkInit {
 		#ifdef ENABLE_VALIDATION_LAYER
 			std::cout << "Create fragment shader module" << std::endl;
 		#endif
-		vk::ShaderModule fragmentShader = vkUtil::CreateModule(
+		vk::ShaderModule fragmentShader = VkUtil::CreateModule(
 			specification.fragmentFilepath, specification.device
 		);
 		vk::PipelineShaderStageCreateInfo fragmentShaderInfo = {};

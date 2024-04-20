@@ -4,37 +4,20 @@
 #include "Device.h"
 #include "Swapchain.h"
 #include "Pipeline.h"
+#include "Framebuffer.h"
+#include "Commands.h"
+#include "Sync.h"
 
-Graphics::Graphics()
+Graphics::Graphics(int width, int height, GLFWwindow *window)
 {
-	CreateGLFW();
+	windowWidth = width;
+	windowHeight = height;
+	this->window = window;
+
 	CreateInstance();
 	CreateDevice();
 	CreatePipeline();
-}
-
-void Graphics::CreateGLFW()
-{
-	//initialize glfw
-	glfwInit();
-
-	//no default rendering client, we'll hook vulkan up
-	//to the window later
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	//resizing breaks the swapchain, we'll disable it for now
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-
-	//GLFWwindow* glfwCreateWindow (int width, int height, const char *title, GLFWmonitor *monitor, GLFWwindow *share)
-	if (window = glfwCreateWindow(windowWidth, windowHeight, "WindowGLFW", nullptr, nullptr)) {
-		#if ENABLE_VALIDATION_LAYER
-			std::cout << "Successfully made a glfw window, width: " << windowWidth << ", height: " << windowHeight << '\n';
-		#endif
-	}
-	else {
-		#if ENABLE_VALIDATION_LAYER
-			std::cout << "GLFW window creation failed\n";
-		#endif
-	}
+	FinalizeSetup();
 }
 
 void Graphics::CreateInstance()
@@ -66,7 +49,7 @@ void Graphics::CreateDevice()
 	graphicsQueue = familyQueues[0];
 	presentQueue = familyQueues[1];
 
-	VkInit::SwapChainBundle bundle = VkInit::MakeSwapchain(logicalDevice, physicalDevice, surface, windowWidth, windowHeight);
+	VkInit::SwapChainBundle bundle = VkInit::CreateSwapchain(logicalDevice, physicalDevice, surface, windowWidth, windowHeight);
 	swapchain = bundle.swapchain;
 	swapchainFrames = bundle.frames;
 	swapchainFormat = bundle.format;
@@ -75,17 +58,28 @@ void Graphics::CreateDevice()
 
 void Graphics::CreatePipeline()
 {
-	vkInit::GraphicsPipelineInBundle specs = {};
+	VkInit::GraphicsPipelineInBundle specs = {};
 	specs.device = logicalDevice;
 	specs.vertexFilepath = "Shaders/vertex.spv";
 	specs.fragmentFilepath = "Shaders/fragment.spv";
 	specs.swapchainExtent = swapchainExtent;
 	specs.swapchainImageFormat = swapchainFormat;
 
-	vkInit::GraphicsPipelineOutBundle output = vkInit::CreateGraphicsPipeline(specs);
+	VkInit::GraphicsPipelineOutBundle output = VkInit::CreateGraphicsPipeline(specs);
 	layout = output.layout;
 	renderpass = output.renderpass;
 	pipeline = output.pipeline;
+}
+
+void Graphics::FinalizeSetup()
+{
+	VkInit::framebufferInput frameBufferInput;
+	frameBufferInput.device = logicalDevice;
+	frameBufferInput.renderpass = renderpass;
+	frameBufferInput.swapchainExtent = swapchainExtent;
+	VkInit::CreateFramebuffers(frameBufferInput, swapchainFrames);
+
+	
 }
 
 Graphics::~Graphics()
@@ -99,6 +93,7 @@ Graphics::~Graphics()
 	for (size_t i = 0; i < swapchainFrames.size(); i++)
 	{
 		logicalDevice.destroyImageView(swapchainFrames[i].imageView);
+		logicalDevice.destroyFramebuffer(swapchainFrames[i].frameBuffer);
 	}
 
 	logicalDevice.destroySwapchainKHR(swapchain);
@@ -113,7 +108,4 @@ Graphics::~Graphics()
 	#endif
 
 	instance.destroy();
-
-	glfwDestroyWindow(window);
-	glfwTerminate();
 }

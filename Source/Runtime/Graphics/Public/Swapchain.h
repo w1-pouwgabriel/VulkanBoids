@@ -29,8 +29,8 @@ namespace VkInit
 	/**
 		Go through all the swapchain options and see which ones are available to us.
 
-		\param device
-		\param surface
+		\param device PhysicalDevice
+		\param surface SurfaceKHR
 		\returns struct with all the data that we need for the creation process
 	*/
 	SwapChainSupportDetails QuerySwapChainSupport(const vk::PhysicalDevice& device, const vk::SurfaceKHR& surface);
@@ -72,7 +72,7 @@ namespace VkInit
 	vk::Extent2D ChooseSwapchainExtent(uint32_t width, uint32_t height, vk::SurfaceCapabilitiesKHR capabilities);
 
 	/**
-		Make a swapchain
+		Create a swapchain
 
 		\param logicalDevice the logical device
 		\param physicalDevice the physical device
@@ -81,5 +81,5 @@ namespace VkInit
 		\param height the requested height
 		\returns a struct holding the swapchain and other associated data structures
 	*/
-	SwapChainBundle MakeSwapchain(vk::Device logicalDevice, vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, int width, int height);
+	SwapChainBundle CreateSwapchain(vk::Device logicalDevice, vk::PhysicalDevice physicalDevice, vk::SurfaceKHR surface, int width, int height);
 }
