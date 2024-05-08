@@ -27,4 +27,12 @@ namespace VkInit
         vk::PhysicalDevice physicalDevice, 
         vk::SurfaceKHR surface  
     );
+
+	/**
+		Make a command buffer for each swapchain frame and return a main command buffer.
+
+		\param inputChunk the required input info
+		\returns the main command buffer
+	*/
+	vk::CommandBuffer CreateCommandBuffers(commandBufferInputChunk inputChunk);
 }

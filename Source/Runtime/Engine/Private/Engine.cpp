@@ -2,7 +2,12 @@
 
 Engine::Engine()
 {
-	graphics = new GraphicsApp(640, 480);
+	graphics = new App(640, 480);
+}
+
+void Engine::Run()
+{
+	graphics->Run();
 }
 
 Engine::~Engine()

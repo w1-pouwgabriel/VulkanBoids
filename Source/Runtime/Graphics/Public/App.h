@@ -2,10 +2,10 @@
 #include "Utils.h"
 #include "Graphics.h"
 
-class GraphicsApp {
+class App {
 public:
-	GraphicsApp(int width, int height);
-	~GraphicsApp();
+	App(int width, int height);
+	~App();
 	
 	void Run();
 

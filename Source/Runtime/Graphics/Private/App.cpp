@@ -1,13 +1,13 @@
-#include "GraphicsApp.h"
+#include "App.h"
 
-GraphicsApp::GraphicsApp(int width, int height)
+App::App(int width, int height)
 {
     CreateGLFW(width, height);
 
     graphicsEngine = new Graphics(width, height, window);
 }
 
-GraphicsApp::~GraphicsApp()
+App::~App()
 {
 	delete graphicsEngine;
 
@@ -15,7 +15,7 @@ GraphicsApp::~GraphicsApp()
 	glfwTerminate();
 }
 
-void GraphicsApp::CreateGLFW(int width, int height)
+void App::CreateGLFW(int width, int height)
 {
     //initialize glfw
 	glfwInit();
@@ -39,12 +39,29 @@ void GraphicsApp::CreateGLFW(int width, int height)
 	}
 }
 
-void GraphicsApp::CalculateFrameRate()
+void App::CalculateFrameRate()
 {
+	currentTime = glfwGetTime();
+	double delta = currentTime - lastTime;
 
+	if (delta >= 1) {
+		int framerate{ std::max(1, int(numFrames / delta)) };
+		std::stringstream title;
+		title << "Running at " << framerate << " fps.";
+		glfwSetWindowTitle(window, title.str().c_str());
+		lastTime = currentTime;
+		numFrames = -1;
+		frameTime = float(1000.0 / framerate);
+	}
+
+	++numFrames;
 }
 
-void GraphicsApp::Run()
+void App::Run()
 {
-
+	while (!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+		graphicsEngine->Render();
+		CalculateFrameRate();
+	}
 }

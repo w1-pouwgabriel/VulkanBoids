@@ -8,6 +8,8 @@ public:
 	Graphics(int width, int height, GLFWwindow* window);
 	~Graphics();
 
+	void Render();
+
 private:
 	//GLFW
 	int windowWidth;
@@ -48,4 +50,7 @@ private:
 	vk::Fence inFlightFence;
 	vk::Semaphore imageAvailable, renderFinished;
 	void FinalizeSetup();
+
+	//Draw command buffers
+	void DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex);
 };

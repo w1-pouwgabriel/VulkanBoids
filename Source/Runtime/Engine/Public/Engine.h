@@ -1,8 +1,6 @@
 #pragma once
 
-//class GraphicsApp;
-
-#include "GraphicsApp.h"
+#include "App.h"
 
 class Engine
 {
@@ -10,6 +8,8 @@ public:
 	Engine();
 	~Engine();
 
+	void Run();
+
 private:
-	GraphicsApp* graphics;
+	App* graphics;
 };
