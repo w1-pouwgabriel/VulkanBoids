@@ -47,8 +47,8 @@ private:
 	vk::CommandBuffer mainCommandBuffer;
 
 	//Synchronization objects
-	vk::Fence inFlightFence;
-	vk::Semaphore imageAvailable, renderFinished;
+	int maxFramesInFlight, frameNumber;
+
 	void FinalizeSetup();
 
 	//Draw command buffers

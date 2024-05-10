@@ -54,6 +54,8 @@ void Graphics::CreateDevice()
 	swapchainFrames = bundle.frames;
 	swapchainFormat = bundle.format;
 	swapchainExtent = bundle.extent;
+	maxFramesInFlight = static_cast<int>(swapchainFrames.size());
+	frameNumber = 0;
 }
 
 void Graphics::CreatePipeline()
@@ -84,12 +86,15 @@ void Graphics::FinalizeSetup()
 	VkInit::commandBufferInputChunk commandBufferInput = {logicalDevice, commandPool, swapchainFrames};
 	mainCommandBuffer = VkInit::CreateCommandBuffers(commandBufferInput); 
 
-	inFlightFence = VkInit::CreateFence(logicalDevice);
-	imageAvailable = VkInit::CreateSemaphore(logicalDevice);
-	renderFinished = VkInit::CreateSemaphore(logicalDevice);
+	for (auto &frame : swapchainFrames)
+	{
+		frame.inFlight = VkInit::CreateFence(logicalDevice);
+		frame.imageAvailable  = VkInit::CreateSemaphore(logicalDevice);
+		frame.renderFinished = VkInit::CreateSemaphore(logicalDevice);
+	}
 }
 
-void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex)
+void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex) 
 {
 	vk::CommandBufferBeginInfo beginInfo = {};
 
@@ -133,11 +138,11 @@ void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageI
 
 void Graphics::Render()
 {
-	logicalDevice.waitForFences(1, &inFlightFence, VK_TRUE, UINT64_MAX);
-	logicalDevice.resetFences(1, &inFlightFence);
+	logicalDevice.waitForFences(1, &swapchainFrames[frameNumber].inFlight, VK_TRUE, UINT64_MAX);
+	logicalDevice.resetFences(1, &swapchainFrames[frameNumber].inFlight);
 	
 	//acquireNextImageKHR(vk::SwapChainKHR, timeout, semaphore_to_signal, fence)
-	uint32_t imageIndex{ logicalDevice.acquireNextImageKHR(swapchain, UINT64_MAX, imageAvailable, nullptr).value };
+	uint32_t imageIndex{ logicalDevice.acquireNextImageKHR(swapchain, UINT64_MAX, swapchainFrames[frameNumber].imageAvailable, nullptr).value };
 
 	vk::CommandBuffer commandBuffer = swapchainFrames[imageIndex].commandBuffer;
 
@@ -147,7 +152,7 @@ void Graphics::Render()
 
 	vk::SubmitInfo submitInfo = {};
 
-	vk::Semaphore waitSemaphores[] = { imageAvailable };
+	vk::Semaphore waitSemaphores[] = { swapchainFrames[frameNumber].imageAvailable };
 	vk::PipelineStageFlags waitStages[] = { vk::PipelineStageFlagBits::eColorAttachmentOutput };
 	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
@@ -156,12 +161,12 @@ void Graphics::Render()
 	submitInfo.commandBufferCount = 1;
 	submitInfo.pCommandBuffers = &commandBuffer;
 
-	vk::Semaphore signalSemaphores[] = { renderFinished };
+	vk::Semaphore signalSemaphores[] = { swapchainFrames[frameNumber].renderFinished };
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
 
 	try {
-		graphicsQueue.submit(submitInfo, inFlightFence);
+		graphicsQueue.submit(submitInfo, swapchainFrames[frameNumber].inFlight);
 	}
 	catch (vk::SystemError err) {
 		
@@ -174,36 +179,37 @@ void Graphics::Render()
 	presentInfo.waitSemaphoreCount = 1;
 	presentInfo.pWaitSemaphores = signalSemaphores;
 
-	vk::SwapchainKHR swapChains[] = { swapchain };
+	vk::SwapchainKHR swapChains[] = { swapchain }; 
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = swapChains;
 
 	presentInfo.pImageIndices = &imageIndex;
 
-	presentQueue.presentKHR(presentInfo);	
+	presentQueue.presentKHR(presentInfo);
+
+	frameNumber = (frameNumber + 1) % maxFramesInFlight;
 }
 
 Graphics::~Graphics()
 {
 	logicalDevice.waitIdle();
 
-	logicalDevice.destroyFence(inFlightFence);
-	logicalDevice.destroySemaphore(imageAvailable);
-	logicalDevice.destroySemaphore(renderFinished);
-
 	logicalDevice.destroyCommandPool(commandPool);
 
 	logicalDevice.destroyRenderPass(renderpass);
 
+	for (auto frame : swapchainFrames)
+	{
+		logicalDevice.destroyFence(frame.inFlight);
+		logicalDevice.destroySemaphore(frame.imageAvailable);
+		logicalDevice.destroySemaphore(frame.renderFinished);
+		logicalDevice.destroyImageView(frame.imageView);
+		logicalDevice.destroyFramebuffer(frame.frameBuffer);
+	}
+
 	logicalDevice.destroyPipelineLayout(layout);
 
 	logicalDevice.destroyPipeline(pipeline);
-
-	for (size_t i = 0; i < swapchainFrames.size(); i++)
-	{
-		logicalDevice.destroyImageView(swapchainFrames[i].imageView);
-		logicalDevice.destroyFramebuffer(swapchainFrames[i].frameBuffer);
-	}
 
 	logicalDevice.destroySwapchainKHR(swapchain);
 
@@ -218,4 +224,3 @@ Graphics::~Graphics()
 
 	instance.destroy();
 }
-
