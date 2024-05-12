@@ -15,9 +15,11 @@ GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Engine/Private Private)
 
 # Private includes
 target_include_directories(VulkanBoids PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Graphics)
+target_include_directories(VulkanBoids PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core)
 
 # Link libraries
 target_link_libraries(VulkanBoids PUBLIC Graphics)
+target_link_libraries(VulkanBoids PUBLIC Core)
 
 # Include self
 target_include_directories(VulkanBoids PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Engine/Public)

@@ -7,7 +7,7 @@ public:
 	App(int width, int height);
 	~App();
 	
-	void Run();
+	void Run(Scene& scene);
 
 private:
 	Graphics* graphicsEngine;

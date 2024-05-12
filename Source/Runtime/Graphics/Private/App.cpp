@@ -1,4 +1,5 @@
 #include "App.h"
+#include "Scene.h"
 
 App::App(int width, int height)
 {
@@ -57,11 +58,11 @@ void App::CalculateFrameRate()
 	++numFrames;
 }
 
-void App::Run()
+void App::Run(Scene& scene)
 {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		graphicsEngine->Render();
+		graphicsEngine->Render(scene);
 		CalculateFrameRate();
 	}
 }

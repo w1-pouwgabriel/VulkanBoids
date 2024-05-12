@@ -2,13 +2,14 @@
 #include "Utils.h"
 #include "Frame.h"
 
+class Scene;
 class Graphics
 {
 public:
 	Graphics(int width, int height, GLFWwindow* window);
 	~Graphics();
 
-	void Render();
+	void Render(Scene& scene);
 
 private:
 	//GLFW
@@ -52,5 +53,5 @@ private:
 	void FinalizeSetup();
 
 	//Draw command buffers
-	void DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex);
+	void DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, Scene& scene);
 };

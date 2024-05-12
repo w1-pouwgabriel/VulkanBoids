@@ -7,6 +7,14 @@
 #include "Framebuffer.h"
 #include "Commands.h"
 #include "Sync.h"
+#include "Scene.h"
+
+#include <glm/vec3.hpp> // glm::vec3
+#include <glm/vec4.hpp> // glm::vec4
+#include <glm/mat4x4.hpp> // glm::mat4
+#include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
+#include <glm/ext/matrix_clip_space.hpp> // glm::perspective
+#include <glm/ext/scalar_constants.hpp> // glm::pi
 
 Graphics::Graphics(int width, int height, GLFWwindow *window)
 {
@@ -94,7 +102,7 @@ void Graphics::FinalizeSetup()
 	}
 }
 
-void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex) 
+void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, Scene& scene) 
 {
 	vk::CommandBufferBeginInfo beginInfo = {};
 
@@ -122,7 +130,19 @@ void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageI
 
 	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
 
-	commandBuffer.draw(3, 1, 0, 0);
+	for (glm::vec3 position : scene.trianglePositions) {
+
+		glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
+		VkUtil::ObjectData objectData;
+		objectData.model = model;
+		commandBuffer.pushConstants(
+			layout, vk::ShaderStageFlagBits::eVertex,
+			0, sizeof(objectData), &objectData
+		);
+
+		commandBuffer.draw(3, 1, 0, 0);
+
+	}
 
 	commandBuffer.endRenderPass();
 
@@ -136,7 +156,7 @@ void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageI
 	}
 }
 
-void Graphics::Render()
+void Graphics::Render(Scene& scene)
 {
 	logicalDevice.waitForFences(1, &swapchainFrames[frameNumber].inFlight, VK_TRUE, UINT64_MAX);
 	logicalDevice.resetFences(1, &swapchainFrames[frameNumber].inFlight);
@@ -148,7 +168,12 @@ void Graphics::Render()
 
 	commandBuffer.reset();
 
-	DrawCommandbuffer(commandBuffer, imageIndex);
+	// for (Models &model : moddels)
+	// {
+	// 		DrawCommandbuffer(model.commandBuffer, imageIndex);
+	// }
+
+	DrawCommandbuffer(commandBuffer, imageIndex, scene);
 
 	vk::SubmitInfo submitInfo = {};
 
@@ -169,7 +194,6 @@ void Graphics::Render()
 		graphicsQueue.submit(submitInfo, swapchainFrames[frameNumber].inFlight);
 	}
 	catch (vk::SystemError err) {
-		
 		#if ENABLE_VALIDATION_LAYER
 			std::cout << "failed to submit draw command buffer!" << std::endl;
 		#endif

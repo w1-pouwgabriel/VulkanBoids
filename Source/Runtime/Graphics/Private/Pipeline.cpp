@@ -1,4 +1,5 @@
 #include "Pipeline.h"
+#include "ResourceStructs.h"
 
 namespace VkInit {
 
@@ -7,7 +8,16 @@ namespace VkInit {
 		vk::PipelineLayoutCreateInfo layoutInfo;
 		layoutInfo.flags = vk::PipelineLayoutCreateFlags();
 		layoutInfo.setLayoutCount = 0;
-		layoutInfo.pushConstantRangeCount = 0;
+
+		layoutInfo.pushConstantRangeCount = 1;
+		vk::PushConstantRange pushConstantInfo;
+		pushConstantInfo.offset = 0;
+		pushConstantInfo.size = sizeof(VkUtil::ObjectData);
+		pushConstantInfo.stageFlags = vk::ShaderStageFlagBits::eVertex;
+
+		//layoutInfo.pPushConstantRanges = &pushConstantInfo;
+		layoutInfo.pPushConstantRanges = &pushConstantInfo;
+		
 		try {
 			return device.createPipelineLayout(layoutInfo);
 		}
