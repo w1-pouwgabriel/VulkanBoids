@@ -10,6 +10,7 @@ public:
 	~Graphics();
 
 	void Render(Scene& scene);
+	void RecreateSwapchain();
 
 private:
 	//GLFW
@@ -42,13 +43,16 @@ private:
 	vk::RenderPass renderpass;
 	vk::Pipeline pipeline;
 	void CreatePipeline();
+	void CleanupSwapchain();
 
 	//Command-related variables
 	vk::CommandPool commandPool;
 	vk::CommandBuffer mainCommandBuffer;
+	void CreateFramebuffers();
 
 	//Synchronization objects
 	int maxFramesInFlight, frameNumber;
+	void CreateSyncObjects();
 
 	void FinalizeSetup();
 

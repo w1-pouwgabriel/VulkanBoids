@@ -9,12 +9,7 @@
 #include "Sync.h"
 #include "Scene.h"
 
-#include <glm/vec3.hpp> // glm::vec3
-#include <glm/vec4.hpp> // glm::vec4
-#include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/ext/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale
-#include <glm/ext/matrix_clip_space.hpp> // glm::perspective
-#include <glm/ext/scalar_constants.hpp> // glm::pi
 
 Graphics::Graphics(int width, int height, GLFWwindow *window)
 {
@@ -81,25 +76,68 @@ void Graphics::CreatePipeline()
 	pipeline = output.pipeline;
 }
 
-void Graphics::FinalizeSetup()
+void Graphics::RecreateSwapchain()
+{
+	windowWidth = 0;
+	windowHeight = 0;
+	while (windowWidth == 0 || windowHeight == 0) {
+		glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+		glfwWaitEvents();
+	}
+
+	logicalDevice.waitIdle();
+
+	CleanupSwapchain();
+
+	CreatePipeline();
+	CreateFramebuffers();
+	CreateSyncObjects();
+
+	VkInit::commandBufferInputChunk commandBufferInput = { logicalDevice, commandPool, swapchainFrames };
+	VkInit::CreateCommandBuffers(commandBufferInput);
+}
+
+void Graphics::CreateFramebuffers() 
 {
 	VkInit::framebufferInput frameBufferInput;
 	frameBufferInput.device = logicalDevice;
 	frameBufferInput.renderpass = renderpass;
 	frameBufferInput.swapchainExtent = swapchainExtent;
 	VkInit::CreateFramebuffers(frameBufferInput, swapchainFrames);
-	
-	commandPool = VkInit::CreateCommandPool(logicalDevice, physicalDevice, surface);
+}
 
-	VkInit::commandBufferInputChunk commandBufferInput = {logicalDevice, commandPool, swapchainFrames};
-	mainCommandBuffer = VkInit::CreateCommandBuffers(commandBufferInput); 
+void Graphics::CleanupSwapchain() 
+{
+	for (VkUtil::SwapChainFrame &frame : swapchainFrames) {
+		logicalDevice.destroyImageView(frame.imageView);
+		logicalDevice.destroyFramebuffer(frame.frameBuffer);
+		logicalDevice.destroyFence(frame.inFlight);
+		logicalDevice.destroySemaphore(frame.imageAvailable);
+		logicalDevice.destroySemaphore(frame.renderFinished);
+	}
+	logicalDevice.destroySwapchainKHR(swapchain);
+}
 
+void Graphics::CreateSyncObjects()
+{
 	for (auto &frame : swapchainFrames)
 	{
 		frame.inFlight = VkInit::CreateFence(logicalDevice);
 		frame.imageAvailable  = VkInit::CreateSemaphore(logicalDevice);
 		frame.renderFinished = VkInit::CreateSemaphore(logicalDevice);
 	}
+}
+
+void Graphics::FinalizeSetup()
+{
+	CreateFramebuffers();
+	
+	commandPool = VkInit::CreateCommandPool(logicalDevice, physicalDevice, surface);
+
+	VkInit::commandBufferInputChunk commandBufferInput = {logicalDevice, commandPool, swapchainFrames};
+	mainCommandBuffer = VkInit::CreateCommandBuffers(commandBufferInput); 
+
+	CreateSyncObjects();
 }
 
 void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, Scene& scene) 
@@ -159,19 +197,33 @@ void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageI
 void Graphics::Render(Scene& scene)
 {
 	logicalDevice.waitForFences(1, &swapchainFrames[frameNumber].inFlight, VK_TRUE, UINT64_MAX);
-	logicalDevice.resetFences(1, &swapchainFrames[frameNumber].inFlight);
-	
 	//acquireNextImageKHR(vk::SwapChainKHR, timeout, semaphore_to_signal, fence)
-	uint32_t imageIndex{ logicalDevice.acquireNextImageKHR(swapchain, UINT64_MAX, swapchainFrames[frameNumber].imageAvailable, nullptr).value };
+
+	uint32_t imageIndex;
+	try {
+		vk::ResultValue acquire = logicalDevice.acquireNextImageKHR(
+			swapchain, UINT64_MAX, 
+			swapchainFrames[frameNumber].imageAvailable, nullptr
+		);
+		imageIndex = acquire.value;
+	}
+	catch (vk::OutOfDateKHRError error) {
+		std::cout << "Recreate" << std::endl;
+		RecreateSwapchain();
+		return;
+	}
+	catch (vk::IncompatibleDisplayKHRError error) {
+		std::cout << "Recreate" << std::endl;
+		RecreateSwapchain();
+		return;
+	}
+	catch (vk::SystemError error) {
+		std::cout << "Failed to acquire swapchain image!" << std::endl;
+	}
 
 	vk::CommandBuffer commandBuffer = swapchainFrames[imageIndex].commandBuffer;
 
 	commandBuffer.reset();
-
-	// for (Models &model : moddels)
-	// {
-	// 		DrawCommandbuffer(model.commandBuffer, imageIndex);
-	// }
 
 	DrawCommandbuffer(commandBuffer, imageIndex, scene);
 
@@ -189,6 +241,8 @@ void Graphics::Render(Scene& scene)
 	vk::Semaphore signalSemaphores[] = { swapchainFrames[frameNumber].renderFinished };
 	submitInfo.signalSemaphoreCount = 1;
 	submitInfo.pSignalSemaphores = signalSemaphores;
+
+	logicalDevice.resetFences(1, &swapchainFrames[frameNumber].inFlight);
 
 	try {
 		graphicsQueue.submit(submitInfo, swapchainFrames[frameNumber].inFlight);
@@ -209,7 +263,19 @@ void Graphics::Render(Scene& scene)
 
 	presentInfo.pImageIndices = &imageIndex;
 
-	presentQueue.presentKHR(presentInfo);
+	vk::Result present;
+	try {
+		present = presentQueue.presentKHR(presentInfo);
+	}
+	catch (vk::OutOfDateKHRError error) {
+		present = vk::Result::eErrorOutOfDateKHR;
+	}
+
+	if (present == vk::Result::eErrorOutOfDateKHR || present == vk::Result::eSuboptimalKHR) {
+		std::cout << "Recreate" << std::endl;
+		RecreateSwapchain();
+		return;
+	}
 
 	frameNumber = (frameNumber + 1) % maxFramesInFlight;
 }
