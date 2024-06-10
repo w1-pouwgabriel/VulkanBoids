@@ -4,10 +4,10 @@
 
 class App {
 public:
-	App(int width, int height);
+	App(int width = 640, int height = 480);
 	~App();
 	
-	void Run(Scene& scene);
+	void Run(std::shared_ptr<Scene> scene);
 
 private:
 	Graphics* graphicsEngine;

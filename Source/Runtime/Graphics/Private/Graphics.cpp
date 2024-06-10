@@ -140,7 +140,7 @@ void Graphics::FinalizeSetup()
 	CreateSyncObjects();
 }
 
-void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, Scene& scene) 
+void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, std::shared_ptr<Scene> scene) 
 {
 	vk::CommandBufferBeginInfo beginInfo = {};
 
@@ -168,7 +168,7 @@ void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageI
 
 	commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, pipeline);
 
-	for (glm::vec3 position : scene.trianglePositions) {
+	for (glm::vec3 position : scene->trianglePositions) {
 
 		glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
 		VkUtil::ObjectData objectData;
@@ -194,7 +194,7 @@ void Graphics::DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageI
 	}
 }
 
-void Graphics::Render(Scene& scene)
+void Graphics::Render(std::shared_ptr<Scene> scene)
 {
 	logicalDevice.waitForFences(1, &swapchainFrames[frameNumber].inFlight, VK_TRUE, UINT64_MAX);
 	//acquireNextImageKHR(vk::SwapChainKHR, timeout, semaphore_to_signal, fence)

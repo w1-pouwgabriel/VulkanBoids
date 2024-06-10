@@ -1,9 +1,9 @@
 #pragma once
 
-#include "App.h"
-#include "Scene.h"
-
 #include <memory>
+
+class App;
+class Scene;
 
 class Engine
 {
@@ -14,6 +14,6 @@ public:
 	void Run();
 
 private:
-	App* graphics;
-	Scene scene;
+	std::unique_ptr<App> graphics;
+	std::shared_ptr<Scene> scene;
 };

@@ -58,7 +58,7 @@ void App::CalculateFrameRate()
 	++numFrames;
 }
 
-void App::Run(Scene& scene)
+void App::Run(std::shared_ptr<Scene> scene)
 {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();

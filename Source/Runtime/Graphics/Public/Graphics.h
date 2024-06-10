@@ -9,7 +9,7 @@ public:
 	Graphics(int width, int height, GLFWwindow* window);
 	~Graphics();
 
-	void Render(Scene& scene);
+	void Render(std::shared_ptr<Scene> scene);
 	void RecreateSwapchain();
 
 private:
@@ -57,5 +57,5 @@ private:
 	void FinalizeSetup();
 
 	//Draw command buffers
-	void DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, Scene& scene);
+	void DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, std::shared_ptr<Scene> scene);
 };

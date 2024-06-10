@@ -1,6 +1,7 @@
 #include "Engine.h"
 
-int main()
+// main is the entry point for cross-platform applications
+int main(int argc, char* argv[]) 
 {
     Engine* vroem = new Engine();
 

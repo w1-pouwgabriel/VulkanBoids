@@ -1,0 +1,34 @@
+# Add executable
+set(PROJECT_NAME "LearningVulkan")
+
+add_executable(${PROJECT_NAME})
+
+# Find all subdirectories in the GAMES_DIRECTORY
+file(GLOB SUBDIRS "${CMAKE_CURRENT_LIST_DIR}/Source/*.cpp")
+foreach(SUBDIR ${SUBDIRS})
+    if(IS_DIRECTORY ${SUBDIR})
+        # Add each subdirectory as a subdirectory of the main project
+        add_subdirectory(${SUBDIR})
+    endif()
+endforeach()
+
+# Sources
+file(GLOB SOURCES_PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Source/*.cpp")
+file(GLOB HEADERS_PUBLIC "${CMAKE_CURRENT_LIST_DIR}/Source/*.h")
+
+# Add sources to target
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES_PRIVATE})
+target_sources(${PROJECT_NAME} PUBLIC ${HEADERS_PUBLIC})
+
+# Private includes
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Graphics)
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core)
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Engine)
+
+# Link libraries
+target_link_libraries(${PROJECT_NAME} PUBLIC Engine)
+
+# Ensure we are building a console application, not a Windows GUI application
+if (WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE")
+endif()

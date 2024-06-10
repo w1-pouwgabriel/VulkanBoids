@@ -1,3 +1,4 @@
+# Add library
 add_library(Graphics STATIC)
 
 # Sources

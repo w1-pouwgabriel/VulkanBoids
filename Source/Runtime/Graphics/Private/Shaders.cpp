@@ -8,7 +8,7 @@ namespace VkUtil {
 		size_t filesize{ 0 };
 
 		//If file does not exist it automatitcly closes the app
-		if (ENABLE_VALIDATION_LAYER && !file.is_open()) {
+		if (!file.is_open()) {
 			std::cout << "Failed to load \"" << filename << "\"" << std::endl;
 		}else{
 			filesize = static_cast<size_t>(file.tellg());

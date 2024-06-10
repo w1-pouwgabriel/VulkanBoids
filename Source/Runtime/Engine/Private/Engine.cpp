@@ -1,9 +1,11 @@
 #include "Engine.h"
+#include "App.h"
+#include "Scene.h"
 
 Engine::Engine() :
-	scene()
+	graphics()
 {
-	graphics = new App(640, 480);
+	scene = std::shared_ptr<Scene>();
 }
 
 void Engine::Run()
@@ -12,6 +14,4 @@ void Engine::Run()
 }
 
 Engine::~Engine()
-{
-	delete graphics;
-}
+{}

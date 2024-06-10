@@ -1,54 +1,41 @@
 # Add executable
-add_executable(VulkanBoids)
+add_library(Engine STATIC)
 
 # Sources
-file(GLOB SOURCES_PRIVATE "${SOURCE_RUNTIME_DIRECTORY}/Engine/Private/*.cpp")
-file(GLOB HEADERS_PUBLIC "${SOURCE_RUNTIME_DIRECTORY}/Engine/Public/*.h")
+file(GLOB ENGINE_PRIVATE_SOURCES ${SOURCE_RUNTIME_DIRECTORY}/Engine/Private/*.cpp)
+file(GLOB ENGINE_PUBLIC_HEADERS ${SOURCE_RUNTIME_DIRECTORY}/Engine/Public/*.h)
 
-# Add sources to target
-target_sources(VulkanBoids PRIVATE ${SOURCES_PRIVATE})
-target_sources(VulkanBoids PUBLIC ${HEADERS_PUBLIC})
+target_sources(Engine PRIVATE ${ENGINE_PRIVATE_SOURCES})
+target_sources(Engine PUBLIC ${ENGINE_PUBLIC_HEADERS})
 
 # Create the project filters
-GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Engine/Public Public)
 GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Engine/Private Private)
+GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Engine/Public Public)
 
 # Private includes
-target_include_directories(VulkanBoids PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Graphics)
-target_include_directories(VulkanBoids PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core)
+MESSAGE(STATUS "Vulkan include dir: ${Vulkan_INCLUDE_DIRS}")
 
-# Link libraries
-target_link_libraries(VulkanBoids PUBLIC Graphics)
-target_link_libraries(VulkanBoids PUBLIC Core)
+#### -------------- TODO update correct directories
+target_include_directories(Engine PUBLIC ${Vulkan_INCLUDE_DIRS})
+target_include_directories(Engine PUBLIC ${SOURCE_THIRDPARTY_DIRECTORY}/glm)
+target_include_directories(Engine PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Graphics)
+target_include_directories(Engine PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core)
+
+target_link_libraries(Engine PUBLIC ${Vulkan_LIBRARIES})
+target_link_libraries(Engine PUBLIC Graphics)
+target_link_libraries(Engine PUBLIC Core)
 
 # Include self
-target_include_directories(VulkanBoids PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Engine/Public)
-target_include_directories(VulkanBoids PRIVATE ${SOURCE_RUNTIME_DIRECTORY}/Engine/Private)
+target_include_directories(Engine PRIVATE ${SOURCE_RUNTIME_DIRECTORY}/Engine/Private)
+target_include_directories(Engine PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Engine/Public)
 
 # Compile definitions
-target_compile_definitions(VulkanBoids PUBLIC -DRTS_VULKAN)
+target_compile_definitions(Engine PUBLIC -DRTS_VULKAN)
 
 if(${CMAKE_HOST_WIN32})
-    target_compile_definitions(VulkanBoids PUBLIC -DPPP_WINDOWS)
+    target_compile_definitions(Engine PUBLIC -DPPP_WINDOWS)
 endif()
 
 # Target properties
-set_target_properties(VulkanBoids PROPERTIES
+set_target_properties(Engine PROPERTIES
                       FOLDER "Engine")
-
-# Get the list of .spv files
-file(GLOB SPV_FILES ${CMAKE_SOURCE_DIR}/Source/Runtime/Graphics/Shaders/*.spv)
-
-# Copy each .spv file individually
-foreach(SPV_FILE ${SPV_FILES})
-    # Get the file name without the path
-    get_filename_component(FILE_NAME ${SPV_FILE} NAME)
-
-    # Copy the file to the build directory
-    add_custom_command(
-        TARGET VulkanBoids PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy
-                ${SPV_FILE}
-                ${CMAKE_CURRENT_BINARY_DIR}/Shaders/${FILE_NAME}
-    )
-endforeach()

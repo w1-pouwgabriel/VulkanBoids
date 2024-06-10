@@ -8,7 +8,7 @@
             "name": "Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Source/Runtime/Engine/VulkanBoids.exe",
+            "program": "${workspaceFolder}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/Source/Runtime/Engine/",//"${workspaceRoot}",
