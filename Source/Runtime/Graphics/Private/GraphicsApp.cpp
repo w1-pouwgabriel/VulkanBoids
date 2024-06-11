@@ -1,14 +1,14 @@
-#include "App.h"
+#include "GraphicsApp.h"
 #include "Scene.h"
 
-App::App(int width, int height)
+GraphicsApp::GraphicsApp(int width, int height)
 {
     CreateGLFW(width, height);
 
     graphicsEngine = new Graphics(width, height, window);
 }
 
-App::~App()
+GraphicsApp::~GraphicsApp()
 {
 	delete graphicsEngine;
 
@@ -16,7 +16,7 @@ App::~App()
 	glfwTerminate();
 }
 
-void App::CreateGLFW(int width, int height)
+void GraphicsApp::CreateGLFW(int width, int height)
 {
     //initialize glfw
 	glfwInit();
@@ -40,7 +40,7 @@ void App::CreateGLFW(int width, int height)
 	}
 }
 
-void App::CalculateFrameRate()
+void GraphicsApp::CalculateFrameRate()
 {
 	currentTime = glfwGetTime();
 	double delta = currentTime - lastTime;
@@ -58,7 +58,7 @@ void App::CalculateFrameRate()
 	++numFrames;
 }
 
-void App::Run(std::shared_ptr<Scene> scene)
+void GraphicsApp::Run(Scene& scene)
 {
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
