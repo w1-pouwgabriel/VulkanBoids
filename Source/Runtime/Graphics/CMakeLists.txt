@@ -16,7 +16,7 @@ GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Graphics/Public Public)
 MESSAGE(STATUS "Vulkan include dir: ${Vulkan_INCLUDE_DIRS}")
 
 target_include_directories(Graphics PUBLIC ${Vulkan_INCLUDE_DIRS})
-target_include_directories(Graphics PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core/Public) # Is this a okay?
+target_include_directories(Graphics PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core/Public)
 target_include_directories(Graphics PUBLIC ${SOURCE_THIRDPARTY_DIRECTORY}/glm)
 target_include_directories(Graphics PUBLIC ${SOURCE_THIRDPARTY_DIRECTORY}/glfw/include)
 
@@ -36,4 +36,4 @@ endif()
 
 # Target properties
 set_target_properties(Graphics PROPERTIES
-                      FOLDER "Graphics")
+                      FOLDER "Engine")

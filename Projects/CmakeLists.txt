@@ -12,4 +12,5 @@ MACRO(GROUPSOURCES curdir folder_name)
     ENDFOREACH()
 ENDMACRO(GROUPSOURCES)
 
-add_subdirectory(Games)
+add_subdirectory(LearningVulkan)
+add_subdirectory(TestGame)

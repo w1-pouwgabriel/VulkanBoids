@@ -1,17 +1,20 @@
 #include "Engine.h"
-#include "App.h"
+
+#include "GraphicsApp.h"
 #include "Scene.h"
 
-Engine::Engine() :
-	graphics()
+Engine::Engine()
+	: scene(), graphics(640, 480)
 {
-	scene = std::shared_ptr<Scene>();
+
 }
 
 void Engine::Run()
 {
-	graphics->Run(scene);
+	graphics.Run(scene);
 }
 
 Engine::~Engine()
-{}
+{
+
+}

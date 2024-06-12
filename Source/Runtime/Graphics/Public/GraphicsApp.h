@@ -2,12 +2,12 @@
 #include "Utils.h"
 #include "Graphics.h"
 
-class App {
+class GraphicsApp {
 public:
-	App(int width = 640, int height = 480);
-	~App();
+	GraphicsApp(int width = 640, int height = 480);
+	~GraphicsApp();
 	
-	void Run(std::shared_ptr<Scene> scene);
+	void Run(Scene& scene);
 
 private:
 	Graphics* graphicsEngine;

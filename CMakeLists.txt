@@ -4,12 +4,14 @@ set(PROJECT_NAME "Echo")
 
 project(${PROJECT_NAME})
 
-# Add a macro for debugging
-# All current compile options: Debug, Release, RelWithDebInfo, and MinSizeRel
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-    add_compile_definitions(ENABLE_VALIDATION_LAYER=1)
-elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    add_compile_definitions(ENABLE_VALIDATION_LAYER=0)
+if(UNIX)
+	# Add a macro for debugging
+	# All current compile options: Debug, Release, RelWithDebInfo, and MinSizeRel
+	if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+		add_compile_definitions(ENABLE_VALIDATION_LAYER=1)
+	elseif("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
+		add_compile_definitions(ENABLE_VALIDATION_LAYER=0)
+	endif()
 endif()
 
 # Use C++ 17 as a standard
@@ -19,6 +21,14 @@ set(CMAKE_CXX_STANDARD 17)
 SET_PROPERTY(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if(MSVC)
+	# Add a macro for debugging
+	# All current compile options: Debug, Release, RelWithDebInfo, and MinSizeRel
+	if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
+	add_compile_definitions(ENABLE_VALIDATION_LAYER=1)
+	elseif(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+	add_compile_definitions(ENABLE_VALIDATION_LAYER=0)
+	endif()
+
 	# Remove the always defined _WINDOWS flag
 	# CPP
 	string (REPLACE "/D_WINDOWS" "" CMAKE_CUSTOM_CPP_FLAGS ${CMAKE_CXX_FLAGS})
@@ -45,4 +55,3 @@ MESSAGE(STATUS ${PROJECT_DIRECTORY})
 add_subdirectory(${SOURCE_THIRDPARTY_DIRECTORY})
 add_subdirectory(${SOURCE_RUNTIME_DIRECTORY})
 add_subdirectory(${PROJECT_DIRECTORY})
-

@@ -1,9 +1,12 @@
 #pragma once
 
+#include "GraphicsApp.h"
+#include "Scene.h"
 #include <memory>
 
-class App;
-class Scene;
+struct foo{
+	int i = 1;
+};
 
 class Engine
 {
@@ -14,6 +17,6 @@ public:
 	void Run();
 
 private:
-	std::unique_ptr<App> graphics;
-	std::shared_ptr<Scene> scene;
+	GraphicsApp graphics;
+	Scene scene;
 };

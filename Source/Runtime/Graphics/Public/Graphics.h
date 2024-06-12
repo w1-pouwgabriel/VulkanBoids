@@ -2,14 +2,15 @@
 #include "Utils.h"
 #include "Frame.h"
 
-class Scene;
+#include "Scene.h"
+
 class Graphics
 {
 public:
 	Graphics(int width, int height, GLFWwindow* window);
 	~Graphics();
 
-	void Render(std::shared_ptr<Scene> scene);
+	void Render(Scene& scene);
 	void RecreateSwapchain();
 
 private:
@@ -57,5 +58,5 @@ private:
 	void FinalizeSetup();
 
 	//Draw command buffers
-	void DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, std::shared_ptr<Scene> scene);
+	void DrawCommandbuffer(vk::CommandBuffer commandBuffer, int32_t imageIndex, Scene& scene);
 };

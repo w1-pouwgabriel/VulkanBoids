@@ -12,25 +12,14 @@ target_sources(Engine PUBLIC ${ENGINE_PUBLIC_HEADERS})
 GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Engine/Private Private)
 GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Engine/Public Public)
 
-# Private includes
-MESSAGE(STATUS "Vulkan include dir: ${Vulkan_INCLUDE_DIRS}")
-
 #### -------------- TODO update correct directories
-target_include_directories(Engine PUBLIC ${Vulkan_INCLUDE_DIRS})
-target_include_directories(Engine PUBLIC ${SOURCE_THIRDPARTY_DIRECTORY}/glm)
-target_include_directories(Engine PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Graphics)
-target_include_directories(Engine PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core)
 
-target_link_libraries(Engine PUBLIC ${Vulkan_LIBRARIES})
 target_link_libraries(Engine PUBLIC Graphics)
 target_link_libraries(Engine PUBLIC Core)
 
 # Include self
 target_include_directories(Engine PRIVATE ${SOURCE_RUNTIME_DIRECTORY}/Engine/Private)
 target_include_directories(Engine PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Engine/Public)
-
-# Compile definitions
-target_compile_definitions(Engine PUBLIC -DRTS_VULKAN)
 
 if(${CMAKE_HOST_WIN32})
     target_compile_definitions(Engine PUBLIC -DPPP_WINDOWS)

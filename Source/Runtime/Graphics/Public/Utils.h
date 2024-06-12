@@ -27,3 +27,4 @@
 #include <optional>
 #include <vector>
 #include <fstream>
+#include <memory>

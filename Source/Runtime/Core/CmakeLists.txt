@@ -11,20 +11,11 @@ target_sources(Core PUBLIC ${CORE_PUBLIC_HEADERS})
 GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Core/Private Private)
 GROUPSOURCES(${SOURCE_RUNTIME_DIRECTORY}/Core/Public Public)
 
-# Private includes
-MESSAGE(STATUS "Vulkan include dir: ${Vulkan_INCLUDE_DIRS}")
-
-target_include_directories(Core PUBLIC ${Vulkan_INCLUDE_DIRS})
 target_include_directories(Core PUBLIC ${SOURCE_THIRDPARTY_DIRECTORY}/glm)
-
-target_link_libraries(Core PUBLIC ${Vulkan_LIBRARIES})
 
 # Include self
 target_include_directories(Core PRIVATE ${SOURCE_RUNTIME_DIRECTORY}/Core/Private)
 target_include_directories(Core PUBLIC ${SOURCE_RUNTIME_DIRECTORY}/Core/Public)
-
-# Compile definitions
-target_compile_definitions(Core PUBLIC -DRTS_VULKAN)
 
 if(${CMAKE_HOST_WIN32})
     target_compile_definitions(Core PUBLIC -DPPP_WINDOWS)
@@ -32,4 +23,4 @@ endif()
 
 # Target properties
 set_target_properties(Core PROPERTIES
-                      FOLDER "Core")
+                      FOLDER "Engine")

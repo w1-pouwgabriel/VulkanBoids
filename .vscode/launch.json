@@ -8,11 +8,11 @@
             "name": "Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}",
+            "program": "${workspaceFolder}/build/Projects/LearningVulkan/LearningVulkan.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build/Source/Runtime/Engine/",//"${workspaceRoot}",
-            "preLaunchTask": "CMake: build", // The name of the task that you want to execute before launch
+            "cwd": "${workspaceFolder}/Projects/LearningVulkan",//"${workspaceRoot}",
+            "preLaunchTask": "", // The name of the task that you want to execute before launch
             "environment": [],
             "externalConsole": true,
             "logging": {
